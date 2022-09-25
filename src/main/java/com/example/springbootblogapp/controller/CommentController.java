@@ -29,10 +29,19 @@ public class CommentController {
     }
 
     @GetMapping(value = "posts/{postId}/comments")
-    public ResponseEntity<?> createComment(
+    public ResponseEntity<?> getAllComments(
             @PathVariable(name = "postId") Long postId
     ){
         List<CommentResponse> commentList = commentService.getAllCommentsByPostId(postId);
         return ResponseEntity.status(HttpStatus.OK).body(commentList);
+    }
+
+    @GetMapping(value = "posts/{postId}/comments/{commentId}")
+    public ResponseEntity<?> getComment(
+            @PathVariable(name = "postId") Long postId,
+            @PathVariable(name = "commentId") Long commentId
+    ){
+        CommentResponse commentResponse = commentService.getComment(postId, commentId);
+        return ResponseEntity.status(HttpStatus.OK).body(commentResponse);
     }
 }

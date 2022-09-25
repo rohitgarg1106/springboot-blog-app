@@ -2,6 +2,7 @@ package com.example.springbootblogapp.service;
 
 import com.example.springbootblogapp.entity.Comment;
 import com.example.springbootblogapp.entity.PostEntity;
+import com.example.springbootblogapp.exception.BadMappingException;
 import com.example.springbootblogapp.exception.ResourceNotFoundException;
 import com.example.springbootblogapp.repository.CommentRepository;
 import com.example.springbootblogapp.repository.PostRepository;
@@ -39,5 +40,18 @@ public class CommentService {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post","id",String.valueOf(postId)));
         List<Comment> commentList = commentRepository.findAllByPost_Id(postEntity.getId());
         return commentList.stream().map(c -> new CommentResponse(c)).collect(Collectors.toList());
+    }
+
+    public CommentResponse getComment(Long postId, Long commentId) {
+        PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post","id",String.valueOf(postId)));
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment","id",String.valueOf(commentId)));
+
+        if(comment.getPost().getId() != postId){
+            throw new BadMappingException(commentId, postId);
+        }
+
+        return new CommentResponse(comment);
+
     }
 }
