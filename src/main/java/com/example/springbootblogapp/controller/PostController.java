@@ -5,7 +5,6 @@ import com.example.springbootblogapp.request.PostRequest;
 import com.example.springbootblogapp.response.PaginatedResponse;
 import com.example.springbootblogapp.service.PostService;
 import com.example.springbootblogapp.utils.AppConstants;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
