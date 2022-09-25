@@ -4,6 +4,7 @@ import com.example.springbootblogapp.payload.PostDto;
 import com.example.springbootblogapp.request.PostRequest;
 import com.example.springbootblogapp.response.PaginatedResponse;
 import com.example.springbootblogapp.service.PostService;
+import com.example.springbootblogapp.utils.AppConstants;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -42,9 +43,9 @@ public class PostController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> getAllPosts(
-            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy
+            @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NO, required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy
     ){
         PaginatedResponse pr = postService.getAllPosts(pageNo, pageSize,sortBy);
         return ResponseEntity.status(HttpStatus.OK).body(pr);
