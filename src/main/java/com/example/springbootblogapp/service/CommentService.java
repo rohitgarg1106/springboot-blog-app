@@ -9,6 +9,9 @@ import com.example.springbootblogapp.request.CommentRequest;
 import com.example.springbootblogapp.response.CommentResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CommentService {
 
@@ -30,5 +33,11 @@ public class CommentService {
         Comment newComment = commentRepository.saveAndFlush(comment);
 
         return new CommentResponse(newComment);
+    }
+
+    public List<CommentResponse> getAllCommentsByPostId(long postId){
+        PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post","id",String.valueOf(postId)));
+        List<Comment> commentList = commentRepository.findAllByPost_Id(postEntity.getId());
+        return commentList.stream().map(c -> new CommentResponse(c)).collect(Collectors.toList());
     }
 }
