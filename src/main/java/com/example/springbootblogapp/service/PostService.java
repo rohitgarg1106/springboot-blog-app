@@ -5,9 +5,11 @@ import com.example.springbootblogapp.exception.ResourceNotFoundException;
 import com.example.springbootblogapp.payload.PostDto;
 import com.example.springbootblogapp.repository.PostRepository;
 import com.example.springbootblogapp.request.PostRequest;
+import com.example.springbootblogapp.response.PaginatedResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,11 +41,21 @@ public class PostService {
         return new PostDto(entityOp.get());
     }
 
-    public List<PostDto> getAllPosts(int pageNo, int pageSize) {
-        Pageable pg =  PageRequest.of(pageNo, pageSize);
+    public PaginatedResponse getAllPosts(int pageNo, int pageSize, String sortBy) {
+
+
+        Pageable pg =  PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
         Page <PostEntity> postList = postRepository.findAll(pg);
         List <PostDto> postDtoList = postList.getContent().stream().map(post -> new PostDto(post)).collect(Collectors.toList());
-        return postDtoList;
+
+        return PaginatedResponse.builder()
+                .postDtoList(postDtoList)
+                .totalElements(postList.getTotalElements())
+                .totalPages(postList.getTotalPages())
+                .size(postList.getSize())
+                .number(postList.getNumber())
+                .last(postList.isLast())
+                .build();
     }
 
 

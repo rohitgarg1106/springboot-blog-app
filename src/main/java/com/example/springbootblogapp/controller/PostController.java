@@ -2,9 +2,11 @@ package com.example.springbootblogapp.controller;
 
 import com.example.springbootblogapp.payload.PostDto;
 import com.example.springbootblogapp.request.PostRequest;
+import com.example.springbootblogapp.response.PaginatedResponse;
 import com.example.springbootblogapp.service.PostService;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,13 +38,16 @@ public class PostController {
       return ResponseEntity.status(HttpStatus.OK).body(postDto);
     }
 
-    @GetMapping
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<?> getAllPosts(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy
     ){
-        List<PostDto> postDtoList = postService.getAllPosts(pageNo, pageSize);
-        return ResponseEntity.status(HttpStatus.OK).body(postDtoList);
+        PaginatedResponse pr = postService.getAllPosts(pageNo, pageSize,sortBy);
+        return ResponseEntity.status(HttpStatus.OK).body(pr);
     }
 
     @PutMapping(value = "{id}")
