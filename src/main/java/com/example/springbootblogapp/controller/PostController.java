@@ -9,9 +9,14 @@ import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -25,8 +30,21 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<?> createPost(
-            @RequestBody PostRequest postRequest
+           @Valid @RequestBody PostRequest postRequest,
+           BindingResult result
     ){
+
+        Map<String, String> errors = new HashMap<String,String>();
+        if(result.hasErrors()){
+            result.getAllErrors().forEach(error -> {
+                String fieldName = ((FieldError)error).getField();
+                String message = error.getDefaultMessage();
+                errors.put(fieldName,message);
+            });
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
+
         PostDto postDto = postService.createPost(postRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(postDto);
     }
