@@ -6,6 +6,7 @@ import com.example.springbootblogapp.payload.PostDto;
 import com.example.springbootblogapp.repository.PostRepository;
 import com.example.springbootblogapp.request.PostRequest;
 import com.example.springbootblogapp.response.PaginatedResponse;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,14 +22,23 @@ public class PostService {
 
     private PostRepository postRepository;
 
-    public PostService(PostRepository postRepository) {
+    private ModelMapper modelMapper;
+
+    public PostService(PostRepository postRepository, ModelMapper modelMapper) {
         this.postRepository = postRepository;
+        this.modelMapper = modelMapper;
     }
 
     public PostDto createPost(PostRequest postRequest) {
-        PostEntity entity = new PostEntity(postRequest);
+
+//        PostEntity entity = new PostEntity(postRequest);
+        PostEntity entity = modelMapper.map(postRequest, PostEntity.class);
+
         PostEntity createdPost = postRepository.saveAndFlush(entity);
-        PostDto postDto = new PostDto(createdPost);
+
+//        PostDto postDto = new PostDto(createdPost);
+        PostDto postDto = modelMapper.map(createdPost, PostDto.class);
+
         return postDto;
     }
 
